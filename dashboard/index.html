@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Academic Performance & Lifestyle Analytics | NIT Jalandhar (Roll: 24103048)</title>
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <nav class="top-nav">
+    <div class="container nav-inner">
+      <div class="brand-wrapper">
+        <div class="brand-logo">NITJ</div>
+        <div class="brand-text">
+          <h1>DMA Lab Analytics Dashboard</h1>
+          <p>Dr. B. R. Ambedkar National Institute of Technology Jalandhar</p>
+        </div>
+      </div>
+      <div class="nav-badges">
+        <span class="badge-author">Student Roll: 24103048</span>
+        <span class="badge-synthetic" title="Dataset is an educational/scenario-based sample for statistical methodology demonstration">
+          <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          Scenario-Based Dataset (N = 121)
+        </span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Header -->
+  <header class="hero-banner">
+    <div class="container">
+      <div class="hero-content">
+        <div class="hero-subtitle">Data Mining & Analytics Lab Project</div>
+        <h2 class="hero-title">Analysis of Student Academic Performance &amp; Lifestyle Determinants</h2>
+        <p class="hero-desc">
+          An empirical data mining investigation into the relationships between daily study hours, institutional attendance, recreational screen media, course backlogs, and semester Grade Point Average (SGPA).
+        </p>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="container">
+
+    <!-- Interactive Filter Card -->
+    <section class="filter-card" aria-label="Dataset Filters">
+      <div class="filter-header">
+        <h3>
+          <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: var(--primary);">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+          </svg>
+          Interactive Cohort Filters
+        </h3>
+        <div class="filter-actions">
+          <span id="filterCountBadge" class="filter-count-badge">Showing 121 of 121 Students</span>
+          <button id="resetFiltersBtn" class="btn-reset">Reset Filters</button>
+        </div>
+      </div>
+      <div class="filter-grid">
+        <div class="filter-group">
+          <label for="filterGender">Gender</label>
+          <select id="filterGender" class="filter-select">
+            <option value="all">All Genders</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label for="filterYear">Year of Study</label>
+          <select id="filterYear" class="filter-select">
+            <option value="all">All Years</option>
+            <option value="1st Year">1st Year</option>
+            <option value="2nd Year">2nd Year</option>
+            <option value="3rd Year">3rd Year</option>
+            <option value="4th Year">4th Year</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label for="filterBranch">Degree Branch</label>
+          <select id="filterBranch" class="filter-select">
+            <option value="all">All Branches</option>
+            <option value="B.Tech CSE">B.Tech CSE</option>
+            <option value="B.Tech ECE">B.Tech ECE</option>
+            <option value="B.Tech Electrical">B.Tech Electrical</option>
+            <option value="B.Tech Mechanical">B.Tech Mechanical</option>
+            <option value="B.Tech Civil">B.Tech Civil</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label for="filterStudy">Study Hours</label>
+          <select id="filterStudy" class="filter-select">
+            <option value="all">All Study Ranges</option>
+            <option value="Less than 1 hour">&lt; 1 hour</option>
+            <option value="1-2 hours">1-2 hours</option>
+            <option value="2-3 hours">2-3 hours</option>
+            <option value="3-4 hours">3-4 hours</option>
+            <option value="4-5 hours">4-5 hours</option>
+            <option value="More than 5 hours">&gt; 5 hours</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label for="filterBacklogs">Backlogs Burden</label>
+          <select id="filterBacklogs" class="filter-select">
+            <option value="all">All Backlog Status</option>
+            <option value="0">0 Backlogs (Clean)</option>
+            <option value="1">1 Backlog</option>
+            <option value="2">2 Backlogs</option>
+            <option value="4 or more">4+ Backlogs</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label for="filterRisk">Standing Risk</label>
+          <select id="filterRisk" class="filter-select">
+            <option value="all">All Risk Levels</option>
+            <option value="Low Risk">Low Risk</option>
+            <option value="Moderate Risk">Moderate Risk</option>
+            <option value="High Risk">High Risk</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <!-- Key Performance Indicators (KPIs) -->
+    <section class="kpi-grid" aria-label="Key Performance Indicators">
+      <div class="kpi-card">
+        <span class="kpi-title">Active Cohort Size</span>
+        <span id="kpiTotalStudents" class="kpi-val">121</span>
+        <span class="kpi-note">Students in current subset</span>
+      </div>
+      <div class="kpi-card emerald">
+        <span class="kpi-title">Average Current SGPA</span>
+        <span id="kpiAvgSgpa" class="kpi-val">7.26</span>
+        <span class="kpi-note">Modal bracket: 7.0 - 8.0</span>
+      </div>
+      <div class="kpi-card teal">
+        <span class="kpi-title">Mean Daily Study</span>
+        <span id="kpiAvgStudy" class="kpi-val">2.80 hrs</span>
+        <span class="kpi-note">Strongest positive predictor (&rho;=+0.444)</span>
+      </div>
+      <div class="kpi-card amber">
+        <span class="kpi-title">Clean Academic Standing</span>
+        <span id="kpiZeroBacklogs" class="kpi-val">61.2%</span>
+        <span class="kpi-note">Students with 0 active backlogs</span>
+      </div>
+      <div class="kpi-card indigo">
+        <span class="kpi-title">Mean Attendance Rate</span>
+        <span id="kpiAvgAttendance" class="kpi-val">76.6%</span>
+        <span class="kpi-note">Above 75% institutional cutoff</span>
+      </div>
+      <div class="kpi-card rose">
+        <span class="kpi-title">High Risk Students</span>
+        <span id="kpiHighRiskRate" class="kpi-val">12.4% (15)</span>
+        <span class="kpi-note">Backlogs &ge;2 and sub-6.5 SGPA</span>
+      </div>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <nav class="tabs-navigation" aria-label="Dashboard Sections">
+      <button class="nav-tab-btn active" data-tab="tab-overview">
+        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+        Cohort Demographics
+      </button>
+      <button class="nav-tab-btn" data-tab="tab-academics">
+        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
+        Academic Performance &amp; Progression
+      </button>
+      <button class="nav-tab-btn" data-tab="tab-heatmaps">
+        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>
+        Lifestyle Heatmaps &amp; Cross-Tabulations
+      </button>
+      <button class="nav-tab-btn" data-tab="tab-models">
+        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>
+        Statistical Models &amp; GPA Simulator
+      </button>
+      <button class="nav-tab-btn" data-tab="tab-interventions">
+        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+        Early Warning Framework
+      </button>
+      <button class="nav-tab-btn" data-tab="tab-limitations">
+        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+        Data Provenance &amp; Ethics
+      </button>
+      <button class="nav-tab-btn" data-tab="tab-deliverables">
+        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+        Deliverables Hub
+      </button>
+    </nav>
+
+    <!-- TAB 1: DEMOGRAPHICS -->
+    <div id="tab-overview" class="tab-pane active">
+      <div class="section-grid">
+        <div class="content-card">
+          <div class="card-header">
+            <h3>Gender Distribution</h3>
+            <p>Institutional sample balance (N = 121: 71.1% Male, 28.9% Female)</p>
+          </div>
+          <div class="chart-box">
+            <canvas id="genderChart"></canvas>
+          </div>
+        </div>
+
+        <div class="content-card">
+          <div class="card-header">
+            <h3>Year of Study Breakdown</h3>
+            <p>Preponderance of 3rd Year students (70.2%) reflecting mid-degree lifestyle patterns</p>
+          </div>
+          <div class="chart-box">
+            <canvas id="yearChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="content-card">
+        <div class="card-header">
+          <h3>Academic Program / Branch Representation</h3>
+          <p>Multi-disciplinary engineering cohort across 5 key NIT departments</p>
+        </div>
+        <div class="chart-box-lg">
+          <canvas id="branchChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: ACADEMICS -->
+    <div id="tab-academics" class="tab-pane">
+      <div class="section-grid">
+        <div class="content-card">
+          <div class="card-header">
+            <h3>Current SGPA Distribution</h3>
+            <p>Midpoint brackets; bell-curved with modal concentration at 7.0–8.0 (35.5%)</p>
+          </div>
+          <div class="chart-box">
+            <canvas id="sgpaDistChart"></canvas>
+          </div>
+        </div>
+
+        <div class="content-card">
+          <div class="card-header">
+            <h3>Semester SGPA Trajectory</h3>
+            <p>Directional change compared to preceding academic semester</p>
+          </div>
+          <div class="chart-box">
+            <canvas id="trajectoryChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-grid">
+        <div class="content-card">
+          <div class="card-header">
+            <h3>Course Backlogs Burden</h3>
+            <p>61.2% maintain clean academic standing (0 backlogs); 6.6% face severe burden (4+)</p>
+          </div>
+          <div class="chart-box">
+            <canvas id="backlogsChart"></canvas>
+          </div>
+        </div>
+
+        <div class="content-card">
+          <div class="card-header">
+            <h3>Academic Trajectory Insights</h3>
+            <p>Stability vs. Academic Volatility</p>
+          </div>
+          <div style="padding: 1rem 0;">
+            <p style="font-size: 0.9rem; margin-bottom: 0.75rem; color: var(--slate-700);">
+              The cohort exhibits balanced trajectory distribution: <strong>35.5% increased</strong> their SGPA, <strong>33.9% maintained</strong> their grade band, and <strong>30.6% experienced academic decline</strong>.
+            </p>
+            <div class="callout">
+              <strong>Key Finding:</strong> SGPA decline strongly correlates with accumulating active backlogs (&rho; = -0.2655, p = 0.0032) and elevated recreational screen media exceeding 4 hours/day (&rho; = -0.2668, p = 0.0031).
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Student Data Table -->
+      <div class="content-card" style="margin-top: 1.5rem;">
+        <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+          <div>
+            <h3>Microdata Browser (Sample Records)</h3>
+            <p>Individual student observations reflecting active filters</p>
+          </div>
+          <input type="text" id="tableSearch" placeholder="Search by branch, risk, SGPA..." style="padding: 0.4rem 0.8rem; border-radius: 6px; border: 1px solid var(--slate-300); font-size: 0.85rem; width: 240px;">
+        </div>
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Gender</th>
+                <th>Year</th>
+                <th>Degree Program</th>
+                <th>Current SGPA</th>
+                <th>Backlogs</th>
+                <th>Daily Study</th>
+                <th>Attendance</th>
+                <th>Risk Profile</th>
+              </tr>
+            </thead>
+            <tbody id="studentTableBody">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem; padding-top: 0.75rem; border-top: 1px solid var(--slate-200);">
+          <span id="tablePageInfo" style="font-size: 0.8rem; color: var(--slate-500);">Page 1 of 13</span>
+          <div style="display: flex; gap: 0.5rem;">
+            <button id="tablePrevBtn" class="btn-reset" onclick="changeTablePage(-1)">&larr; Previous</button>
+            <button id="tableNextBtn" class="btn-reset" onclick="changeTablePage(1)">Next &rarr;</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: HEATMAPS & CROSS-TABS -->
+    <div id="tab-heatmaps" class="tab-pane">
+      <div class="content-card" style="margin-bottom: 1.5rem;">
+        <div class="card-header">
+          <h3>Cross-Tabulation 1: Daily Study Hours vs. Current SGPA</h3>
+          <p>Frequency count and row-percentage distribution illustrating study duration thresholds</p>
+        </div>
+        <div class="heatmap-wrapper" id="studySgpaHeatmap"></div>
+        <div class="callout">
+          <strong>Threshold Analysis:</strong> 100% of students achieving SGPA 9.0–10.0 report &ge;4 daily study hours. In contrast, 88.2% of students studying &lt;1 hour daily occupy the bottom 5.0–7.0 SGPA brackets.
+        </div>
+      </div>
+
+      <div class="content-card" style="margin-bottom: 1.5rem;">
+        <div class="card-header">
+          <h3>Cross-Tabulation 2: Class Attendance vs. Current SGPA</h3>
+          <p>Distribution showing academic outcomes across institutional attendance tiers</p>
+        </div>
+        <div class="heatmap-wrapper" id="attendanceSgpaHeatmap"></div>
+        <div class="callout">
+          <strong>Institutional Attendance Cutoff:</strong> Attendance below 60% yields a 0% representation in the 8.0+ SGPA bracket, demonstrating attendance as a non-compensable academic baseline.
+        </div>
+      </div>
+
+      <div class="content-card">
+        <div class="card-header">
+          <h3>Cross-Tabulation 3: Recreational Screen Time vs. Current SGPA</h3>
+          <p>Examination of non-academic digital exposure and grade depression</p>
+        </div>
+        <div class="heatmap-wrapper" id="screenSgpaHeatmap"></div>
+        <div class="callout callout-warning">
+          <strong>Displacement Effect:</strong> Among students logging &gt;4 hours of daily screen time, over 60% fall into sub-7.0 SGPA tiers, confirming digital leisure displacement of review hours.
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 4: MODELS & GPA SIMULATOR -->
+    <div id="tab-models" class="tab-pane">
+      <!-- Spearman Correlations -->
+      <div class="content-card" style="margin-bottom: 1.75rem;">
+        <div class="card-header">
+          <h3>Non-Parametric Spearman Rank Correlation Matrix (&rho;)</h3>
+          <p>Evaluated against Current SGPA (Midpoint) across all 121 cohort observations</p>
+        </div>
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Determinant Variable</th>
+                <th>Category</th>
+                <th class="text-right">Coefficient (&rho;)</th>
+                <th class="text-center">p-value</th>
+                <th class="text-center">Significance</th>
+                <th>Strength Indicator</th>
+                <th>Analytical Interpretation</th>
+              </tr>
+            </thead>
+            <tbody id="spearmanTableBody">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+        <p class="text-xs text-slate-500" style="margin-top: 0.5rem;">
+          Significance codes: *** p &lt; 0.001, ** p &lt; 0.01, * p &lt; 0.05, ns = not statistically significant.
+        </p>
+      </div>
+
+      <!-- Multiple OLS Regression -->
+      <div class="content-card" style="margin-bottom: 1.75rem;">
+        <div class="card-header">
+          <h3>Empirical Multiple OLS Regression Model (Stepwise AIC)</h3>
+          <p>Model Specification: Current SGPA = &beta;<sub>0</sub> + &beta;<sub>1</sub>(Study Hours) + &beta;<sub>2</sub>(Previous SGPA) + &beta;<sub>3</sub>(Backlogs) + &epsilon;</p>
+        </div>
+
+        <div class="model-kpi-bar">
+          <div class="model-stat-pill">
+            <span>Model R&sup2;</span>
+            <strong id="regR2">25.1%</strong>
+          </div>
+          <div class="model-stat-pill">
+            <span>Adjusted R&sup2;</span>
+            <strong id="regAdjR2">23.2%</strong>
+          </div>
+          <div class="model-stat-pill">
+            <span>F-Statistic (3, 117)</span>
+            <strong id="regFStat">13.09</strong>
+          </div>
+          <div class="model-stat-pill">
+            <span>Overall p-value</span>
+            <strong id="regFPval">1.97e-07</strong>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Predictor Variable</th>
+                <th class="text-right">Coefficient (&beta;)</th>
+                <th class="text-right">Std. Error</th>
+                <th class="text-right">t-statistic</th>
+                <th class="text-center">p-value</th>
+                <th class="text-center">Sig.</th>
+                <th>Marginal Interpretation</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="font-bold">Intercept (&beta;<sub>0</sub>)</td>
+                <td class="text-right font-mono font-bold">+5.2459</td>
+                <td class="text-right font-mono">0.5055</td>
+                <td class="text-right font-mono">10.377</td>
+                <td class="text-center font-mono">&lt; 2e-16</td>
+                <td class="text-center"><span class="sig-star">***</span></td>
+                <td class="text-xs text-slate-500">Baseline intercept when all predictors are zero</td>
+              </tr>
+              <tr>
+                <td class="font-bold">Daily Study Hours (&beta;<sub>1</sub>)</td>
+                <td class="text-right font-mono font-bold text-emerald-600">+0.2797</td>
+                <td class="text-right font-mono">0.0763</td>
+                <td class="text-right font-mono">3.665</td>
+                <td class="text-center font-mono">0.000373</td>
+                <td class="text-center"><span class="sig-star">***</span></td>
+                <td class="text-xs text-slate-500">+0.28 SGPA gain per additional daily study hour</td>
+              </tr>
+              <tr>
+                <td class="font-bold">Previous SGPA (&beta;<sub>2</sub>)</td>
+                <td class="text-right font-mono font-bold text-emerald-600">+0.1999</td>
+                <td class="text-right font-mono">0.0631</td>
+                <td class="text-right font-mono">3.166</td>
+                <td class="text-center font-mono">0.001968</td>
+                <td class="text-center"><span class="sig-star">**</span></td>
+                <td class="text-xs text-slate-500">+0.20 SGPA persistence per prior GPA point</td>
+              </tr>
+              <tr>
+                <td class="font-bold">Backlogs Count (&beta;<sub>3</sub>)</td>
+                <td class="text-right font-mono font-bold text-rose-600">-0.1360</td>
+                <td class="text-right font-mono">0.0531</td>
+                <td class="text-right font-mono">-2.563</td>
+                <td class="text-center font-mono">0.011626</td>
+                <td class="text-center"><span class="sig-star">*</span></td>
+                <td class="text-xs text-slate-500">-0.14 SGPA penalty per active backlog</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Live GPA Predictor Simulator -->
+      <div class="content-card" style="margin-bottom: 1.75rem;">
+        <div class="card-header">
+          <h3>Interactive GPA Prediction Simulator</h3>
+          <p>Real-time parameter computation based on the verified empirical OLS regression coefficients</p>
+        </div>
+        <div class="predictor-wrapper">
+          <div>
+            <div class="slider-group">
+              <div class="slider-header">
+                <span>Daily Study Duration:</span>
+                <span id="valStudyHours" class="font-mono text-primary font-bold">3.0 hrs/day</span>
+              </div>
+              <input type="range" id="predStudyHours" class="slider-input" min="0.5" max="5.5" step="0.5" value="3.0">
+            </div>
+
+            <div class="slider-group">
+              <div class="slider-header">
+                <span>Previous Semester SGPA:</span>
+                <span id="valPrevSgpa" class="font-mono text-primary font-bold">7.50</span>
+              </div>
+              <input type="range" id="predPrevSgpa" class="slider-input" min="5.0" max="9.5" step="0.25" value="7.50">
+            </div>
+
+            <div class="slider-group">
+              <div class="slider-header">
+                <span>Active Course Backlogs:</span>
+                <span id="valBacklogs" class="font-mono text-primary font-bold">0 active</span>
+              </div>
+              <input type="range" id="predBacklogs" class="slider-input" min="0" max="4" step="1" value="0">
+            </div>
+          </div>
+
+          <div class="pred-result-box">
+            <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--slate-500); letter-spacing: 0.05em;">Estimated SGPA</span>
+            <div id="predResultSgpa" class="pred-result-score">7.58</div>
+            <div id="predRiskBadge" class="badge badge-primary">Stable / Satisfactory Standing</div>
+            <p style="font-size: 0.75rem; color: var(--slate-400); margin-top: 0.75rem;">
+              Calculated using: 5.2459 + 0.2797(Study) + 0.1999(Prev) - 0.1360(Backlogs)
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- K-Means Clustering Profiling -->
+      <div class="content-card">
+        <div class="card-header">
+          <h3>Unsupervised K-Means Cluster Profiles (k = 3, Seed = 42)</h3>
+          <p>Multi-dimensional behavioral segmentation based on standardized academic and lifestyle features</p>
+        </div>
+        <div class="chart-box-lg" style="margin-bottom: 1.5rem;">
+          <canvas id="kmeansChart"></canvas>
+        </div>
+        <div class="section-grid" style="margin-bottom: 0;">
+          <div style="border-top: 3px solid var(--emerald); padding-top: 0.75rem;">
+            <h4 style="color: var(--emerald); font-size: 0.95rem; font-weight: 700;">Cluster 1: High Achievers (40.5%, n=49)</h4>
+            <p style="font-size: 0.8rem; color: var(--slate-600); margin-top: 0.25rem;">
+              Mean SGPA 8.01 | Study 3.72 hrs/day | Attendance 82.1% | Screen 2.30 hrs/day | Backlogs 0.20. Displays exemplary self-regulation and minimal backlog exposure.
+            </p>
+          </div>
+          <div style="border-top: 3px solid var(--rose); padding-top: 0.75rem;">
+            <h4 style="color: var(--rose); font-size: 0.95rem; font-weight: 700;">Cluster 2: At-Risk Cohort (15.7%, n=19)</h4>
+            <p style="font-size: 0.8rem; color: var(--slate-600); margin-top: 0.25rem;">
+              Mean SGPA 6.29 | Study 1.97 hrs/day | Attendance 65.5% | Screen 3.39 hrs/day | Backlogs 2.74. Critical target for proactive institutional early-intervention.
+            </p>
+          </div>
+          <div style="border-top: 3px solid var(--primary); padding-top: 0.75rem;">
+            <h4 style="color: var(--primary); font-size: 0.95rem; font-weight: 700;">Cluster 3: Moderate / Balanced (43.8%, n=53)</h4>
+            <p style="font-size: 0.8rem; color: var(--slate-600); margin-top: 0.25rem;">
+              Mean SGPA 7.20 | Study 2.24 hrs/day | Attendance 76.7% | Screen 3.39 hrs/day | Backlogs 0.49. Mainstream cohort capable of moving into upper tier with structured support.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 5: EARLY WARNING FRAMEWORK -->
+    <div id="tab-interventions" class="tab-pane">
+      <div class="content-card">
+        <div class="card-header">
+          <h3>Three-Tier Academic Early Warning &amp; Institutional Intervention Framework</h3>
+          <p>Actionable, tiered administrative protocols derived directly from empirical clustering and regression cutoffs</p>
+        </div>
+
+        <div class="intervention-tier tier-red">
+          <div class="tier-head">
+            <div class="tier-title" style="color: #991b1b;">
+              <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+              Tier 1: High-Risk Academic Alert (Critical Intervention Cohort)
+            </div>
+            <span class="badge badge-danger">15.7% of Cohort</span>
+          </div>
+          <div class="tier-criteria">
+            <strong>Trigger Criteria:</strong> SGPA &lt; 6.50 OR Active Backlogs &ge; 2 OR Institutional Attendance &lt; 70%
+          </div>
+          <ul class="tier-actions">
+            <li><strong>Mandatory Faculty Mentoring:</strong> Bi-weekly compulsory review sessions with designated department mentors to audit weekly learning goals.</li>
+            <li><strong>Curricular Remediation:</strong> Enrollment in weekend peer-assisted remedial tutorials targeting backlog subjects prior to mid-term assessments.</li>
+            <li><strong>Digital Wellness Coaching:</strong> Counseling on structured time management and reduction of non-academic screen exposure below the 3.5-hour risk threshold.</li>
+            <li><strong>Institutional Restriction:</strong> Limitation on extracurricular executive roles until SGPA recovers above the 6.75 threshold.</li>
+          </ul>
+        </div>
+
+        <div class="intervention-tier tier-amber">
+          <div class="tier-head">
+            <div class="tier-title" style="color: #92400e;">
+              <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+              Tier 2: Moderate Risk / Transition Cohort (Proactive Monitoring)
+            </div>
+            <span class="badge badge-warning">43.8% of Cohort</span>
+          </div>
+          <div class="tier-criteria">
+            <strong>Trigger Criteria:</strong> SGPA 6.50–7.50 AND Exactly 1 Backlog OR Attendance 70%–80%
+          </div>
+          <ul class="tier-actions">
+            <li><strong>Attendance Warning Notifications:</strong> Automated mid-semester alerts triggered when attendance dips towards the 75% regulatory statutory threshold.</li>
+            <li><strong>Study Habit Optimization Workshops:</strong> Practical sessions on active recall, spaced repetition, and transition from cramming to daily regular study.</li>
+            <li><strong>Backlog Clearance Roadmap:</strong> Structured timeline formulation to clear single lingering backlogs during the immediate subsequent examination cycle.</li>
+          </ul>
+        </div>
+
+        <div class="intervention-tier tier-green">
+          <div class="tier-head">
+            <div class="tier-title" style="color: #065f46;">
+              <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+              Tier 3: Academic Excellence &amp; Leadership Cohort
+            </div>
+            <span class="badge badge-success">40.5% of Cohort</span>
+          </div>
+          <div class="tier-criteria">
+            <strong>Trigger Criteria:</strong> SGPA &ge; 8.00 AND Zero Backlogs AND Attendance &gt; 80%
+          </div>
+          <ul class="tier-actions">
+            <li><strong>Peer Tutoring Leadership:</strong> Deployment as paid student tutors or teaching assistants for junior undergraduate cohorts.</li>
+            <li><strong>Undergraduate Research Incentives:</strong> Direct fast-track allocation into departmental sponsored research labs and conference travel grants.</li>
+            <li><strong>Academic Honors &amp; Merit Scholarships:</strong> Priority nomination for competitive corporate fellowships and institutional Dean's List honors.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 6: DATA PROVENANCE & LIMITATIONS -->
+    <div id="tab-limitations" class="tab-pane">
+      <div class="content-card">
+        <div class="card-header">
+          <h3>Methodological Qualifications, Provenance &amp; Limitations</h3>
+          <p>Academic disclosure regarding data architecture, boundaries, and observational validity</p>
+        </div>
+
+        <div class="section-grid" style="margin-top: 1rem;">
+          <div>
+            <h4 style="font-size: 1rem; font-weight: 700; color: var(--slate-800); margin-bottom: 0.5rem;">Dataset Architecture &amp; Provenance</h4>
+            <p style="font-size: 0.85rem; color: var(--slate-600); line-height: 1.6; margin-bottom: 0.75rem;">
+              The dataset consists of <strong>N = 121 student observations</strong> across 18 original variables, cleaned and engineered into 27 standardized analytical features. It was compiled for academic instructional evaluation within the Data Mining &amp; Analytics (DMA) Lab curriculum at Dr. B. R. Ambedkar National Institute of Technology (NIT) Jalandhar.
+            </p>
+            <p style="font-size: 0.85rem; color: var(--slate-600); line-height: 1.6;">
+              To ensure rigorous ethical integrity, the dataset is qualified as a <em>structured educational scenario</em> designed to test data mining workflows, non-parametric correlation mechanics, multi-variable linear modeling, and unsupervised k-means clustering.
+            </p>
+          </div>
+
+          <div>
+            <h4 style="font-size: 1rem; font-weight: 700; color: var(--slate-800); margin-bottom: 0.5rem;">Methodological Boundaries</h4>
+            <ul style="font-size: 0.85rem; color: var(--slate-600); line-height: 1.6; padding-left: 1.25rem;">
+              <li style="margin-bottom: 0.4rem;"><strong>Cross-Sectional Observational Design:</strong> Precludes causal assertions. Observed relationships (e.g., screen time and GPA depression) reflect statistical associations rather than proven causal mechanisms.</li>
+              <li style="margin-bottom: 0.4rem;"><strong>Binned Midpoint Approximations:</strong> Variables such as SGPA (e.g., 7.5 for "7-8") and Study Hours (e.g., 2.5 for "2-3 hours") utilize interval midpoint substitution, constraining fine-grained variance.</li>
+              <li style="margin-bottom: 0.4rem;"><strong>Self-Reporting Vulnerability:</strong> Survey-based metrics (daily screen time, sleep duration, regularity) are inherently susceptible to social desirability and recall distortion.</li>
+              <li><strong>Unobserved Confounders:</strong> Crucial academic determinants such as socioeconomic background, mental health distress, and course difficulty indices were not recorded.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="callout" style="margin-top: 1.5rem;">
+          <strong>Institutional Ethics Statement:</strong> No personally identifiable student information (PII) is included in this repository. All student records are fully anonymized with synthetic identifiers (1–121) complying with educational data confidentiality standards.
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 7: DELIVERABLES HUB -->
+    <div id="tab-deliverables" class="tab-pane">
+      <div class="content-card">
+        <div class="card-header">
+          <h3>Project Deliverables &amp; Artifact Hub</h3>
+          <p>Authoritative deliverables generated for the NIT Jalandhar DMA Lab project (Roll No: 24103048)</p>
+        </div>
+
+        <div class="deliverables-grid" style="margin-top: 1.25rem;">
+          <!-- 1. Presentation -->
+          <div class="deliverable-card">
+            <div>
+              <div class="deliv-icon" style="color: #f59e0b;">📊</div>
+              <div class="deliv-title">24103048_presentation.pptx</div>
+              <div class="deliv-meta">Executive 18-Slide Presentation Deck (16:9 Widescreen, Embedded Charts, Speaker Notes)</div>
+            </div>
+            <a href="../24103048_presentation.pptx" download="24103048_presentation.pptx" class="btn-download">
+              <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+              Download PPTX
+            </a>
+          </div>
+
+          <!-- 2. Report -->
+          <div class="deliverable-card">
+            <div>
+              <div class="deliv-icon" style="color: #2563eb;">📄</div>
+              <div class="deliv-title">24103048_report.docx</div>
+              <div class="deliv-meta">Comprehensive 15-Section Academic Lab Report (APA Standards, Tables, Empirical Formulas)</div>
+            </div>
+            <a href="../24103048_report.docx" download="24103048_report.docx" class="btn-download">
+              <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+              Download DOCX
+            </a>
+          </div>
+
+          <!-- 3. Cleaned Dataset -->
+          <div class="deliverable-card">
+            <div>
+              <div class="deliv-icon" style="color: #10b981;">📑</div>
+              <div class="deliv-title">cleaned_student_academic_performance.csv</div>
+              <div class="deliv-meta">Cleaned &amp; Standardized Dataset (121 Rows &times; 27 Engineered Features, 0 Missing Values)</div>
+            </div>
+            <a href="../cleaned_student_academic_performance.csv" download="cleaned_student_academic_performance.csv" class="btn-download">
+              <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+              Download CSV
+            </a>
+          </div>
+
+          <!-- 4. R Script -->
+          <div class="deliverable-card">
+            <div>
+              <div class="deliv-icon" style="color: #6366f1;">💻</div>
+              <div class="deliv-title">complete_analysis.R</div>
+              <div class="deliv-meta">Full End-to-End Reproducible R Script (Data Cleaning, Base R Heatmaps, OLS, Dynamic K-Means)</div>
+            </div>
+            <a href="../complete_analysis.R" download="complete_analysis.R" class="btn-download">
+              <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+              Download R Script
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container footer-content">
+      <div>
+        <strong style="color: #ffffff;">Data Mining and Analytics (DMA) Lab</strong>
+        <p style="margin-top: 0.25rem;">Department of Computer Science and Engineering, Dr. B. R. Ambedkar National Institute of Technology Jalandhar</p>
+      </div>
+      <div style="text-align: right;">
+        <span style="color: #94a3b8;">Author Roll No: <strong>24103048</strong></span>
+        <p style="font-size: 0.75rem; margin-top: 0.25rem;">Academic Year 2026 &bull; Published for Educational Demonstration</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Main JavaScript File -->
+  <script src="script.js"></script>
+</body>
+</html>
