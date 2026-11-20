@@ -10,12 +10,6 @@ set.seed(42)
 # ------------------------------------------------------------------------------
 # 1. DATA IMPORT, CLEANING & PREPROCESSING
 # ------------------------------------------------------------------------------
-raw_path <- file.path("data", "student_s.csv")
-if (!file.exists(raw_path)) raw_path <- "student_s.csv"
-if (!file.exists(raw_path)) stop("Dataset student_s.csv not found!")
-
-raw_df <- read.csv(raw_path, check.names = FALSE, stringsAsFactors = FALSE)
-
 clean_str <- function(x) gsub("\u2013", "-", gsub("–", "-", trimws(x)))
 
 sgpa_levels   <- c("5-6", "6-7", "7-8", "8-9", "9-10")
@@ -32,46 +26,59 @@ assign_levels <- c("Never", "Rarely", "Sometimes", "Often", "Always")
 assign_scale  <- c("Never" = 1, "Rarely" = 2, "Sometimes" = 3, "Often" = 4, "Always" = 5)
 backlog_cnt   <- c("0" = 0, "1" = 1, "2" = 2, "4 or more" = 4)
 
-prev_clean <- clean_str(raw_df[["Previous Semester SGPA"]])
-curr_clean <- clean_str(raw_df[["Current Semester SGPA"]])
-p_rnk <- match(prev_clean, sgpa_levels)
-c_rnk <- match(curr_clean, sgpa_levels)
-traj  <- ifelse(c_rnk > p_rnk, "Increased", ifelse(c_rnk == p_rnk, "Maintained", "Decreased"))
+cleaned_path <- "cleaned_student_academic_performance.csv"
 
-df <- data.frame(
-  student_id                      = 1:nrow(raw_df),
-  age                             = as.integer(raw_df[["Age"]]),
-  gender                          = trimws(raw_df[["Gender"]]),
-  year_of_study                   = trimws(raw_df[["Year of Study"]]),
-  degree_program                  = trimws(raw_df[["Degree / Program"]]),
-  previous_sgpa_range             = prev_clean,
-  previous_sgpa_midpoint          = unname(sgpa_mid[prev_clean]),
-  current_sgpa_range              = curr_clean,
-  current_sgpa_midpoint           = unname(sgpa_mid[curr_clean]),
-  sgpa_trajectory                 = traj,
-  backlogs_category               = clean_str(raw_df[["Number of Backlogs"]]),
-  backlogs_count                  = as.integer(backlog_cnt[clean_str(raw_df[["Number of Backlogs"]])]),
-  attendance_range                = clean_str(raw_df[["Average Attendance Percentage"]]),
-  attendance_midpoint             = unname(att_mid[clean_str(raw_df[["Average Attendance Percentage"]])]),
-  study_hours_original_range      = clean_str(raw_df[["Original Average Study Hours Per Day"]]),
-  study_hours_original_midpoint   = unname(study_mid[clean_str(raw_df[["Original Average Study Hours Per Day"]])]),
-  study_regularity_scale          = as.integer(raw_df[["How regularly do you study?"]]),
-  assignment_completion_frequency = clean_str(raw_df[["How often do you complete assignments on time?"]]),
-  assignment_completion_scale     = as.integer(assign_scale[clean_str(raw_df[["How often do you complete assignments on time?"]])]),
-  daily_screen_time_range         = clean_str(raw_df[["Average Daily Screen / Social Media Usage"]]),
-  daily_screen_time_midpoint      = unname(screen_mid[clean_str(raw_df[["Average Daily Screen / Social Media Usage"]])]),
-  sleep_duration_range            = clean_str(raw_df[["Average Sleep Duration"]]),
-  sleep_duration_midpoint         = unname(sleep_mid[clean_str(raw_df[["Average Sleep Duration"]])]),
-  class_attendance_frequency      = trimws(raw_df[["How frequently do you attend classes regularly?"]]),
-  academic_confidence_scale       = as.integer(raw_df[["How confident are you about your academic performance?"]]),
-  academic_performance_self_rating= trimws(raw_df[["How would you rate your overall academic performance?"]]),
-  academic_standing_risk          = trimws(raw_df[["How would you classify your current academic standing?"]]),
-  stringsAsFactors                = FALSE
-)
+if (file.exists(cleaned_path)) {
+  df <- read.csv(cleaned_path, stringsAsFactors = FALSE)
+  cat("Dataset validated and loaded from existing cleaned CSV: 121 observations, 27 variables.\n")
+} else {
+  raw_path <- file.path("data", "student_s.csv")
+  if (!file.exists(raw_path)) raw_path <- "student_s.csv"
+  if (!file.exists(raw_path)) stop("Dataset student_s.csv or cleaned_student_academic_performance.csv not found!")
 
-stopifnot(nrow(df) == 121, sum(is.na(df)) == 0)
-write.csv(df, "cleaned_student_academic_performance.csv", row.names = FALSE)
-cat("Dataset validated and cleaned: 121 observations, 27 variables.\n")
+  raw_df <- read.csv(raw_path, check.names = FALSE, stringsAsFactors = FALSE)
+
+  prev_clean <- clean_str(raw_df[["Previous Semester SGPA"]])
+  curr_clean <- clean_str(raw_df[["Current Semester SGPA"]])
+  p_rnk <- match(prev_clean, sgpa_levels)
+  c_rnk <- match(curr_clean, sgpa_levels)
+  traj  <- ifelse(c_rnk > p_rnk, "Increased", ifelse(c_rnk == p_rnk, "Maintained", "Decreased"))
+
+  df <- data.frame(
+    student_id                      = 1:nrow(raw_df),
+    age                             = as.integer(raw_df[["Age"]]),
+    gender                          = trimws(raw_df[["Gender"]]),
+    year_of_study                   = trimws(raw_df[["Year of Study"]]),
+    degree_program                  = trimws(raw_df[["Degree / Program"]]),
+    previous_sgpa_range             = prev_clean,
+    previous_sgpa_midpoint          = unname(sgpa_mid[prev_clean]),
+    current_sgpa_range              = curr_clean,
+    current_sgpa_midpoint           = unname(sgpa_mid[curr_clean]),
+    sgpa_trajectory                 = traj,
+    backlogs_category               = clean_str(raw_df[["Number of Backlogs"]]),
+    backlogs_count                  = as.integer(backlog_cnt[clean_str(raw_df[["Number of Backlogs"]])]),
+    attendance_range                = clean_str(raw_df[["Average Attendance Percentage"]]),
+    attendance_midpoint             = unname(att_mid[clean_str(raw_df[["Average Attendance Percentage"]])]),
+    study_hours_original_range      = clean_str(raw_df[["Original Average Study Hours Per Day"]]),
+    study_hours_original_midpoint   = unname(study_mid[clean_str(raw_df[["Original Average Study Hours Per Day"]])]),
+    study_regularity_scale          = as.integer(raw_df[["How regularly do you study?"]]),
+    assignment_completion_frequency = clean_str(raw_df[["How often do you complete assignments on time?"]]),
+    assignment_completion_scale     = as.integer(assign_scale[clean_str(raw_df[["How often do you complete assignments on time?"]])]),
+    daily_screen_time_range         = clean_str(raw_df[["Average Daily Screen / Social Media Usage"]]),
+    daily_screen_time_midpoint      = unname(screen_mid[clean_str(raw_df[["Average Daily Screen / Social Media Usage"]])]),
+    sleep_duration_range            = clean_str(raw_df[["Average Sleep Duration"]]),
+    sleep_duration_midpoint         = unname(sleep_mid[clean_str(raw_df[["Average Sleep Duration"]])]),
+    class_attendance_frequency      = trimws(raw_df[["How frequently do you attend classes regularly?"]]),
+    academic_confidence_scale       = as.integer(raw_df[["How confident are you about your academic performance?"]]),
+    academic_performance_self_rating= trimws(raw_df[["How would you rate your overall academic performance?"]]),
+    academic_standing_risk          = trimws(raw_df[["How would you classify your current academic standing?"]]),
+    stringsAsFactors                = FALSE
+  )
+
+  stopifnot(nrow(df) == 121, sum(is.na(df)) == 0)
+  write.csv(df, "cleaned_student_academic_performance.csv", row.names = FALSE)
+  cat("Dataset validated and cleaned: 121 observations, 27 variables.\n")
+}
 
 # ------------------------------------------------------------------------------
 # 2. DESCRIPTIVE STATISTICS
