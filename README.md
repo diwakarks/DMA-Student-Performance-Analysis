@@ -4,9 +4,6 @@
 [![Course: DMA Lab](https://img.shields.io/badge/Course-Data%20Mining%20%26%20Analytics%20Lab-2563eb.svg)](#)
 [![Student Roll: 24103048](https://img.shields.io/badge/Roll%20No-24103048-0d9488.svg)](#)
 [![R: Complete Analysis](https://img.shields.io/badge/R-4.x%20Reproducible-blue.svg)](#)
-[![Interactive Dashboard](https://img.shields.io/badge/Dashboard-Chart.js%20%26%20HTML5-emerald.svg)](dashboard/index.html)
-[![License: Academic](https://img.shields.io/badge/License-MIT%20Academic-slate.svg)](#)
-
 ---
 
 ## 📌 Executive Summary
